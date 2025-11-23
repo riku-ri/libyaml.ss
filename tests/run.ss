@@ -10,6 +10,8 @@
 	((test? ?) (let ()
 		(test #t ?)))))
 
+(test-group "libyaml"
+
 (test-group "yaml<-"
 	(test? (procedure? (yaml<- "")))
 	(test? (procedure?
@@ -147,20 +149,24 @@
 		(test? (not (yscalar? 'symbol)))
 	)
 	(test-group "ymap?"
-		(test? (ymap? '(())))
-		(test? (ymap? '(((0 . 1)))))
-		(test? (ymap? '(((() . "null")))))
-		(test? (not (ymap? '((("key" . false-here))))))
-		(test? (not (ymap? '(((false-here . "value"))))))
-		(test? (ymap? '(( (#() . (( ("key" . #("value" 0.1) ) ))) )) ))
+		(test? (ymap?? '(())))
+		(test? (ymap?? '(((0 . 1)))))
+		(test? (ymap?? '(((() . "null")))))
+		(test? (ymap?? '(( (#() . (( ("key" . #("value" 0.1) ) ))) )) ))
+		(test? (not (ymap?? '((("key" . false-here))))))
+		(test? (not (ymap?? '(((false-here . "value"))))))
+		(test? (ymap? '((("key" . false-here)))))
+		(test? (ymap? '(((false-here . "value")))))
 	)
 	(test-group "ylist?"
-		(test? (ylist? #()))
-		(test? (ylist? #(#())))
-		(test? (ylist? #(1 "" #() (()))))
-		(test? (ylist? #((( ((((0 . 1))) . #("u" "v")) )) "tail")))
-		(test? (not (ylist? #(symbol))))
-		(test? (not (ylist? #(#:keyword))))
+		(test? (ylist?? #()))
+		(test? (ylist?? #(#())))
+		(test? (ylist?? #(1 "" #() (()))))
+		(test? (ylist?? #((( ((((0 . 1))) . #("u" "v")) )) "tail")))
+		(test? (not (ylist?? #(symbol))))
+		(test? (not (ylist?? #(#:keyword))))
+		(test? (ylist? #(symbol)))
+		(test? (ylist? #(#:keyword)))
 	)
 	(test-group "ydoc?"
 		(test? (ydoc? '()))
@@ -194,4 +200,6 @@
 		(test? (not (not (<-yaml #:strict-input (yaml<- "")))))
 		(test? (not (not (<-yaml `()))))
 	)
+)
+
 )
