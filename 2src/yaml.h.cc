@@ -57,6 +57,7 @@ template<>class free_t<std::shared_ptr<CXTranslationUnit>>
 
 const char * header[] = {
 "(module (libyaml yaml.h) *" ,
+"(import scheme (chicken base))" ,
 "(import (chicken foreign))" ,
 "(foreign-declare \"#include <yaml.h>\")"
 };
