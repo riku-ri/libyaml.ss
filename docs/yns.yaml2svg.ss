@@ -25,7 +25,6 @@
 		))
 		(:--> ymap /key)
 	))
-	(->/line (lambda (str) (list->vector (string-split str "\n" #t))))
 ) (let-syntax (
 	(write/ (syntax-rules() ((write/ towrite port ...)
 		(begin (write towrite port ...)(newline port ...))
@@ -45,11 +44,14 @@
 	(list-ref* (syntax-rules()
 		((:list-ref i /l) (if (>= i 0)
 			(list-ref /l i)
-			(list-ref /l (- (length /l) 1))
+			(list-ref /l (+ (length /l) i))
 		))
 	))
 ) (let* (
 	(ewrite/ (lambda (towrite) (write/ towrite (current-error-port))))
+	(string+ (lambda (str . ..)
+		(apply string-append (map ->string (cons str ..)))
+	))
 	(-> (lambda (/l . /i)
 		(define (:-> /l /i) (if (null? /i) /l (:-> (list-ref* (car /i) /l) (cdr /i))))
 		(:-> /l /i)
@@ -128,69 +130,39 @@
 
 (print "<svg xmlns=\"http://www.w3.org/2000/svg\">")
 
-(map ewrite/
-	(let
-		(
-			(string->pos (lambda (str) (vector
-					(string-length str)
-					(length (string-split str "\n" #t))
-			)))
-		)
-		(list
-			(map string->pos (list-ref* 0 /tab/col/row))
-			(map string->pos (list-ref* 1 /tab/col/row))
-			(map (lambda (e.g.) (let ((ye (car e.g.)) (se (cdr e.g.)))
-					(cons
-						(map string->pos ye)
-						(map string->pos se)
+(define (string->/tspan ?)
+	(define (/line->/tspan /line dy <<) (cond
+		((null? /line) (reverse <<))
+		(else (let ((^ (car /line))(.. (cdr /line))) (/line->/tspan
+			(cdr /line)
+			(+ dy 1)
+			(cons
+				`(
+					"tspan" ; svg tag
+					(,(string-length ^) . 1) ; (char-count . line-count)
+					( ; svg tag attribute
+						(x . 0) (y . ,(string+ dy 'em))
+						(textLength . "0") ; always set 0 to avoid adjust spacing
 					)
-				))
-				(list-ref* 2 /tab/col/row)
+					. ,^
+				)
+				<<
 			)
-		)
-	)
+		)))
+	))
+	(/line->/tspan (string-split ? "\n" #t) 0 '())
 )
 
-;(let*
-;	(
-;		(/text (map text<- (map /tspan<- (-> /tab/col/row 0))))
-;		(max-textLength (apply max
-;			(map (lambda (?) (assoc* 'textLength (cadr ?))) /text)
-;		))
-;		(textLength->0! (lambda (text) (let*
-;			((textLength (assoc 'textLength (cadr text))))
-;			(set-cdr! textLength "0")
-;		)))
-;	)
-;	(map
-;		(lambda (text) (let*
-;			((textLength (assoc 'textLength (cadr text))))
-;			(set-cdr! textLength max-textLength)
-;		))
-;		/text
-;	)
-;	(map textLength->0! /text)
-;	(map (lambda (?) (map textLength->0! (cddr ?))) /text)
-;
-;	(define (set-y! /text)
-;		(define (:set-y! previous-y /text) (cond
-;			((null? /text) (void))
-;			(else (let
-;				(
-;					(y (assoc 'y (cadr (car /text))))
-;					(em (length (cddr (car /text))))
-;				)
-;				(set-cdr! y (->em previous-y))
-;				(:set-y! (+ previous-y em) (cdr /text))
-;			))
-;		))
-;		(:set-y! 1 /text)
-;	)
-;
-;	(set-y! /text)
-;	(map print (map svg->str /text))
-;)
+(define (/tab/col/row->/svg /tab/col/row) (let ((todo /tab/col/row)) (cond
+	((list? todo) (map /tab/col/row->/svg todo))
+	((string? todo) (string->/tspan todo))
+	(else (abort (condition `(exn message
+		,(string+ "not string or list:\n" todo)))))
+)))
 
+(ewrite/
+(/tab/col/row->/svg /tab/col/row)
+)
 
 (print "</svg>")
 )))
