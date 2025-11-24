@@ -14,7 +14,32 @@ section structure will follow
 
 ## Requirements
 
+- varg
+  - https://github.com/riku-ri/varg.ss
+
 ## API
+
+### Exception
+
+Exceptions is supposed to be compliant with
+the module `(chicken condition)` and SRFI-12
+- http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)
+
+Find details about exception in
+the specific procedure below
+
+#### non-continuable
+
+The non-continuable conditions expand system conditions from:
+- http://wiki.call-cc.org/man/5/Module%20(chicken%20condition)#system-conditions
+
+More specifically, they would be:
+- be with composite kind `(exn libyaml)`
+  - for a condition from a specific procedure `<p>`,
+    the composite kind would be `(exn libyaml <p>)`
+- in the `exn` field, it will contain properties listed below:
+  - `'message`
+  - `'call-chain`
 
 ### Values in `yaml.h`
 
@@ -29,6 +54,9 @@ Functions and enum members can be used in scheme code directly.
 > but [libyaml.ss<sub>git</sub>](.) will use the *yaml.h* in
 > submodule *src/libyaml* but not the yaml.h in your system
 
+### YAML and Scheme
+
+
 ### Read yaml file or string
 
 ```
@@ -42,94 +70,6 @@ Functions and enum members can be used in scheme code directly.
 > Hence **A complete yaml object in scheme is always a vector**.
 > This means if provide a non-vector object as yaml content,
 > like `(yaml<- (list 1 2))` will lead to error.
-
-<table>
-<tr>
-<th>yaml</th>
-<th>scheme</th>
-<th>yaml <i>e.g.</i></th>
-<th>scheme <i>e.g.</i></th>
-<th>note</th>
-</tr>
-
-<tr>
-<td>null</td>
-<td>empty vector</td>
-<td><code>null</code></td>
-<td><code>#()</code></td>
-<td/>
-</tr>
-
-<tr>
-<td>document</td>
-<td>vector</td>
-<td><pre>--- 2</br>---</br>...</pre></td>
-<td><code>#(2 #())</code></td>
-<td> the empty vector is null</td>
-</tr>
-
-<tr>
-<td>boolean</td>
-<td>boolean</td>
-<td><code>true</code><br/><code>false</code></td>
-<td><code>#t</code><br/><code>#f</code></td>
-<td/>
-</tr>
-
-<tr>
-<td>number</td>
-<td>number</td>
-<td>
-	<code>1</code><br/>
-	<code>0.5</code><br/>
-	<code>0o10</code><br/>
-	<code>0x10</code><br/>
-	<code>10e1</code><br/>
-	<code>3E2</code>
-</td>
-<td>
-	<code>1</code><br/>
-	<code>0.5</code><br/>
-	<code>8</code><br/>
-	<code>16</code><br/>
-	<code>100.0</code><br/>
-	<code>300.0</code>
-</td>
-<td/>
-</tr>
-
-<tr>
-<td>inf</td>
-<td>inf</td>
-<td><code>+.inf</code><br/><code>-.INF</code></td>
-<td><code>+inf.0</code><br/><code>-inf.0</code></td>
-<td/>
-</tr>
-
-<tr>
-<td>nan</td>
-<td>nan</td>
-<td><code>.nan</code></td>
-<td><code>+nan.0</code></td>
-<td/>
-</tr>
-
-<tr>
-<td>list</td>
-<td>list</td>
-<td><code>[1 , 2 , 3 , 4, []]</code></td>
-<td><code>#((1 2 3 4 ()))</code></td>
-<td>the top level vector is document</td>
-</tr>
-
-<tr>
-<td>mapping</td>
-<td>A lambda without argument and generate a "association list"</td>
-<td><code>{key: value}</code></td>
-<td><code>(vector (lambda () (list (cons "key" "value"))))</code></td>
-<td>the top level vector is document</td>
-</tr>
-</table>
 
 ##### Examples
 

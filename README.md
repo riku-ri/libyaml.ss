@@ -2,7 +2,7 @@
 
 ## Usage
 
-Refer to [*usage.md*](usage.md)
+Refer to [*docs/usage.md*](docs/usage.md)
 
 ## Installation
 
@@ -21,4 +21,4 @@ chicken-install -s -l .
 
 ## Development
 
-Refer to [*development.md*](development.md)
+Refer to [*docs/de.md*](docs/dev.md)

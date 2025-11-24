@@ -1,0 +1,131 @@
+- des:
+    yaml: |-
+      null
+    ss: |-
+      empty list
+  e.g.:
+  - yaml: |-
+      null
+    ss: |-
+      (list)
+  - yaml: |-
+      ~
+    ss: |-
+      '()
+
+- des:
+    yaml: |-
+      document
+    ss: |-
+      list
+  e.g.:
+  - yaml: |-
+      --- 2
+      ---
+      ...
+    ss: |-
+      (list 2 (list))
+
+- des:
+    yaml: |-
+      mapping
+    ss: |-
+      A list contain only 1 "association list"
+  e.g.:
+  - yaml: |-
+      {key: value}
+    ss: |-
+      '((("key" . "value")))
+
+- des:
+    yaml: |-
+      list
+    ss: |-
+      vector
+  e.g.:
+  - yaml: |-
+      #
+      - 1
+      - 2
+      - 3
+      - 4
+      - []
+    ss: |-
+      (vector
+      1
+      2
+      3
+      4
+      (vector))
+
+- des:
+    yaml: |-
+      boolean
+    ss: |-
+      boolean
+  e.g.:
+  - yaml: |-
+      true
+    ss: |-
+      #t
+  - yaml: |-
+      false
+    ss: |-
+      #f
+
+- des:
+    yaml: |-
+      number
+    ss: |-
+      exact or inexact
+  e.g.:
+  - yaml: |-
+      1
+    ss: |-
+      1
+  - yaml: |-
+      0.5
+    ss: |-
+      0.5
+  - yaml: |-
+      0o10
+    ss: |-
+      8
+  - yaml: |-
+      0x10
+    ss: |-
+      16
+  - yaml: |-
+      10e1
+    ss: |-
+      100.0
+  - yaml: |-
+      3E2
+    ss: |-
+      300.0
+
+- des:
+    yaml: |-
+      not a number
+    ss: |-
+      not a number
+  e.g.:
+  - yaml: |-
+      .nan
+    ss: |-
+      +nan.0
+
+- des:
+    yaml: |-
+      infinity
+    ss: |-
+      infinity
+  e.g.:
+  - yaml: |-
+      +.inf
+    ss: |-
+      +inf.0
+  - yaml: |-
+      -.inf
+    ss: |-
+      -inf.0
