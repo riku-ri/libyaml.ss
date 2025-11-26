@@ -61,14 +61,8 @@
 	(++ (syntax-rules() ((++ .. ...)
 		(if (procedure? (car (list .. ...)))
 			(+ (.. ...) 1) (+ .. ... 1)))))
-	(->em (syntax-rules() ((->em .. ...)
-		(if (procedure? (car (list .. ...)))
-			(sprintf "~Aem" (.. ...)) (sprintf "~Aem" .. ...)))))
-	(->ex (syntax-rules() ((->ex .. ...)
-		(if (procedure? (car (list .. ...)))
-			(sprintf "~Aex" (.. ...)) (sprintf "~Aex" .. ...)))))
 	(list-ref* (syntax-rules()
-		((list-ref i /l) (if (>= i 0)
+		((list-ref /l i) (if (>= i 0)
 			(list-ref /l i)
 			(list-ref /l (+ (length /l) i))
 		))
@@ -77,7 +71,7 @@
 	(ewrite/ (lambda (towrite) (write/ towrite (current-error-port))))
 	(write/ (lambda (towrite) (write/ towrite)))
 	(-> (lambda (/l . /i)
-		(define (-> /l /i) (if (null? /i) /l (-> (list-ref* (car /i) /l) (cdr /i))))
+		(define (-> /l /i) (if (null? /i) /l (-> (list-ref* /l (car /i)) (cdr /i))))
 		(-> /l /i)
 	))
 	(/ylist (vector->list yaml))
@@ -119,26 +113,9 @@
 	))
 	; `("tag" (("k" . "v")) . (("intag" ("ink" . "inv") . "content")))
 	; => <tag k="v"><intag ink="inv">content</intag></tag>
-	(/tspan<- (lambda (str) (let ((/l (string-split str "\n" #t)))
-		(define (/tspan<- /l dy/em) (if (null? /l)
-			'()
-			(cons
-				`(
-					"tspan"
-					(
-						(x . "0") (dy . ,(->em dy/em))
-						(textLength . ,(string-length (car /l)))
-					)
-					. ,(car /l)
-				)
-				(/tspan<- (cdr /l) (+ 1 dy/em))
-			)
-		))
-		(/tspan<- /l 0)
-	)))
 )
 
-;(print "<svg xmlns=\"http://www.w3.org/2000/svg\">")
+(print "<svg xmlns=\"http://www.w3.org/2000/svg\">")
 
 (define (string->/tspan ?)
 	(define (/line->/tspan /line dy //) (cond
@@ -151,8 +128,7 @@
 					"tspan" ; svg tag
 					(,(string-length ^) . 1) ; (char-count . line-count)
 					( ; svg tag attribute
-						(dx . 0) (y . ,(string+ dy 'em))
-						(textLength . "0") ; always set 0 to avoid adjust spacing
+						(dy . "1em")
 					)
 					. ,^
 				)
@@ -296,42 +272,116 @@
 	)
 )
 
-;(define (set-text-y! /tab)
-;	;TODO
-;)
-
-(define (/tab->size /tab)
-	(define (/col->size /col)
-		(define (/row->size /row) (if (string? (car /row))
-			(cdadr /row)
-			(/tab->size /row)
+(define (set-tab-text-y! /tab)
+	(define (set-col-text-y! /col)
+		(define (set-row-text-y! /row) (cond
+			((string? (car /row))
+				(?? (car /row) (lambda (?) (string=? ? "text")))
+				(let ((al (caddr /row)))
+					(set-car! (cddr /row) (alist-update 'y (string+ (cdadr /row) 'em) al))
+				)
+			)
+			(else (set-tab-text-y! /row))
 		))
-		(map /row->size /col)
+		(map set-row-text-y! /col)
 	)
-	(map /col->size /tab)
+	(map set-col-text-y! /tab)
 )
 
-(
-write/
-
-;map ((lambda(@)(@ @))(lambda(@)(lambda(?)(if(assoc"text"?)(write/ ?) (begin(write/ #\()(map(@ @)?)(write/ #\)))))))
-
-(let*
-	(
-		(// ((compose //tspan->//text /tab/col/row->//tspan) /tab/col/row))
-		;(// (-> // 2 5))
+(define (set-tab-text-x! /tab toset)
+	(define (/tab->max-x /tab) (apply + (map /col->max-x /tab)))
+	(define (/col->max-x /col)
+		(define (/row->max-x /row) (cond
+			((string? (car /row)) (caadr /row))
+			(else (/tab->max-x /row))
+		))
+		(max* (map /row->max-x /col))
 	)
-	(set-tab-y! // 0)
-	(let*
-		(
-			(// (|/tab'| //))
+	(define (set-col-text-x! /col)
+		(define (set-row-text-x! /row) (cond
+			((string? (car /row))
+				(?? (car /row) (lambda (?) (string=? ? "text")))
+				(let ((al (caddr /row)))
+					(set-car! (cddr /row) (alist-update 'x (string+ toset 'ex) al))
+				)
+			)
+			(else (set-tab-text-x! /row toset))
+		))
+		(map set-row-text-x! /col)
+	)
+	(if (null? /tab)
+		(void)
+		(let ((w (/col->max-x (car /tab))))
+			(map set-col-text-x! /tab)
+			(set-tab-text-x! (cdr /tab) (+ w toset))
 		)
-		(set-t-tab-y! //)
-		(|/tab'| //)
 	)
 )
 
+(define (set-tspan-x! /tab) (let ((^ (car /tab)))
+	(if (and (string? ^) (string=? ^ "text"))
+		(let ((x (assoc* 'x (caddr /tab))))
+			(define (:set-tspan-x! //tspan) (let ((^ (car //tspan)))
+				(if (and (string? ^) (string=? ^ "tspan"))
+					(set-car! (cddr //tspan) (alist-update 'x x (caddr //tspan)))
+					(map :set-tspan-x! //tspan)
+				)
+			))
+			(:set-tspan-x! (cdddr /tab))
+		)
+		(map set-tspan-x! /tab)
+	)
+))
+
+(define (/tab->svg /tab)(if (string? (car /tab))
+	(let
+		(
+			(tag (car /tab))
+			(attr (caddr /tab))
+			(content (cdddr /tab))
+		)
+		(string+
+			"<" tag " "
+			(string-intersperse
+				(map (lambda (kv) (string+ (~S (car kv)) "=" (~S (cdr kv)))) attr)
+				" ")
+			">"
+			(if (string? content) content (/tab->svg content))
+			"</" tag ">\n"
+		)
+	)
+	(string-intersperse (map /tab->svg /tab) "")
+))
+
+(let* (
+	(title `(
+		"yaml description"
+		"scheme description"
+		(("yaml e.g.") ("scheme e.g."))
+	))
+	(/t/r/c (cons title (transpose /tab/col/row)))
+	(/t/c/r (transpose /t/r/c))
+	(/t/c/r ((compose //tspan->//text /tab/col/row->//tspan) /t/c/r))
+)
+(set-tab-y! /t/c/r 1)
+(let* (
+	(/t/r/c (|/tab'| /t/c/r))
+)
+(set-t-tab-y! /t/r/c)
+(let* (
+	(/t/c/r (|/tab'| /t/r/c))
 )
 
-;(print "</svg>")
+(set-tab-text-y! /t/c/r)
+
+(set-tab-text-x! /t/c/r 0)
+
+(set-tspan-x! /t/c/r)
+
+(print (/tab->svg /t/c/r))
+
+
+)))
+
+(print "</svg>")
 )))
