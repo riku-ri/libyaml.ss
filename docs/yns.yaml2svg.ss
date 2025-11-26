@@ -10,6 +10,9 @@
 (let* (
 	(yaml ((yaml<-)))
 	(~S (lambda (?) (sprintf "~S" ?)))
+	(string+ (lambda (str . ..)
+		(apply string-append (map ->string (cons str ..)))
+	))
 	(assoc* (lambda (key alist) (cdr (assoc key alist))))
 	(assoc*y (lambda (key ymap) (let* ((pair (assoc key (car ymap))))
 		(if pair
@@ -27,6 +30,25 @@
 		(--> ymap /key)
 	))
 ) (let-syntax (
+	(?? (syntax-rules()
+		((?? to-check p ...)
+			(if (not (foldl (lambda (l r) (and l r)) #t
+					(map (lambda (@) (@ to-check))
+						(foldr
+							(lambda (l r) (cond
+								((and (equal? l not) (not (null? r)))
+									(cons (compose not (car r)) (cdr r)))
+								(else (cons l r))
+							))
+							'()
+							(list p ...)
+						))
+				))
+				(abort(condition `(exn message
+					,(string+ '(p ...) '? " NO:\n" (~S to-check)))))
+			)
+		)
+	))
 	(write/ (syntax-rules() ((write/ towrite port ...)
 		(begin (write towrite port ...)(newline port ...))
 	)))
@@ -51,9 +73,6 @@
 ) (let* (
 	(ewrite/ (lambda (towrite) (write/ towrite (current-error-port))))
 	(write/ (lambda (towrite) (write/ towrite)))
-	(string+ (lambda (str . ..)
-		(apply string-append (map ->string (cons str ..)))
-	))
 	(-> (lambda (/l . /i)
 		(define (-> /l /i) (if (null? /i) /l (-> (list-ref* (car /i) /l) (cdr /i))))
 		(-> /l /i)
@@ -179,36 +198,50 @@
 		,(string+ "bad //tspan structure" //tspan)))))
 ))
 
-(define (line-count->y! //text)
-	(define pre-h 0)
+(define pre-h 0)
+(define (set-y! //text)
 	(cond
 		((assoc "text" //text)
 			(map
 				(lambda (text)
-					(let* ((size (cadr text)) (h (+ pre-h (cdr size))))
-						(ewrite/ h)
-						(set-cdr! size h)
-						(ewrite/ size)
-						(set! pre-h h)
-					)
+					(set-car! (cdr text) (cons (cadr text) pre-h))
 				)
 				//text
 			)
+			;(ewrite/ (apply max (map cdar (map cadr //text))))
+			(set! pre-h (+ pre-h (apply max (map cdar (map cadr //text)))))
 		)
-		((list? //text) (map line-count->y! //text))
+		((list? //text) (map set-y! //text))
 	)
 )
 
+(define (/tab->h /tab) (?? /tab list?)
+	(define (/col->h /col) (?? /col list?)
+		(define (/row->h /row)
+			(?? /row not null? list?)
+			(cond
+				((string? (car /row))
+					(?? (car /row) (lambda (?) (string=? ? "text")))
+					(cdadr /row))
+				(else (/tab->h /row))
+			)
+		)
+		(foldl + 0 (map /row->h /col))
+	)
+	(apply max (map /col->h /tab))
+)
+
 (
-;write/
-((lambda(@)(@ @))(lambda(@)(lambda(?)(if(assoc"text"?)(write/ ?)(map(@ @)?)))))
+write/
+
+;((lambda(@)(@ @))(lambda(@)(lambda(?)(if(assoc"text"?)(write/ ?)
+;(begin(write/ #\()(map(@ @)?)(write/ #\)))
+;))))
 
 (let
-(
-	(// (-> ((compose //tspan->//text /tab/col/row->//tspan) /tab/col/row) 2))
-)
-(line-count->y! //)
-//
+	((// ((compose //tspan->//text /tab/col/row->//tspan) /tab/col/row)))
+	//
+	(/tab->h //)
 )
 
 )
