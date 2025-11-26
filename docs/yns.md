@@ -1,11 +1,3 @@
-
-<style>
-body { display: inline; margin: 0px; padding: 0px; }
-table,tr,th,td { border: 1px solid; }
-tr,th,td { padding: 0.5em; }
-table {border-collapse: collapse; margin: 0px; padding: 0px; }
-pre { display: inline; }
-</style>
 <table><table><tr><td><b>yaml description</b></td><td><b>scheme description</b></td><td><table><tr><td><pre><b>yaml e.g.</b></pre></td><td><pre><b>scheme e.g.</b></pre></td></tr></table></td></tr><tr><td>null</td><td>empty list</td><td><table><tr><td><pre>null</pre></td><td><pre>(list)</pre></td></tr><tr><td><pre>~</pre></td><td><pre>'()</pre></td></tr></table></td></tr><tr><td>document</td><td>list</td><td><table><tr><td><pre>--- 2
 ---
 ...</pre></td><td><pre>(list 2 (list))</pre></td></tr></table></td></tr><tr><td>mapping</td><td>A list contain only 1 "association list"</td><td><table><tr><td><pre>{key: value}</pre></td><td><pre>'((("key" . "value")))</pre></td></tr></table></td></tr><tr><td>list</td><td>vector</td><td><table><tr><td><pre>#
