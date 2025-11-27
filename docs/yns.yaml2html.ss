@@ -98,15 +98,15 @@
 	))
 )
 
-(printf "
-<style>
-body { display: inline; margin: 0px; padding: 0px; }
-table,tr,th,td { border: 1px solid; }
-tr,th,td { padding: 0.5em; }
-table {border-collapse: collapse; margin: 0px; padding: 0px; }
-pre { display: inline; }
-</style>
-")
+;(printf "
+;<style>
+;body { display: inline; margin: 0px; padding: 0px; }
+;table,tr,th,td { border: 1px solid; }
+;tr,th,td { padding: 0.5em; }
+;table {border-collapse: collapse; margin: 0px; padding: 0px; }
+;pre { display: inline; }
+;</style>
+;")
 (printf "<table>")
 
 ;(printf "<tr>
