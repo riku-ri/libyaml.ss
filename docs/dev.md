@@ -1,5 +1,7 @@
 # libyaml.ss
 
+<details><summary>out of date</summary>
+
 ## Overview
 
 ```mermaid
@@ -30,3 +32,5 @@ in [*.github/workflows*](.github/workflows).
 
 They will be commit again in the github action if changed,
 so **you may need to pull again after a push**.
+
+</details>
