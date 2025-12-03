@@ -136,7 +136,7 @@ order is not sensitive:
     - Dependes on the source in [git/yaml/libyaml](git/yaml/libyaml).
       Currently `YAML_ANY_ENCODING` should be used if not set
 
-#### e.g.
+#### Examples
 ```lisp
 ((yaml<- "--- 1\n--- 2\n...") 1)
 ```
@@ -158,6 +158,10 @@ order is not sensitive:
 ```
 
 ### Dump yaml
+
+Parameters to `yaml<-` can be
+a sequence that contain 1 or more element listed below,
+order is not sensitive:
 
 ```
 (<-yaml |Parameters| . ...)
@@ -233,6 +237,25 @@ For example:
     - The port will keep opened
 - `#:encoding`
   > The same as `#:encoding` parameter to `yaml<-`
+
+#### Examples
+
+```lisp
+(<-yaml #:strict-input (yaml<- "[1]"))
+```
+
+```lisp
+(<-yaml ((yaml<- "[1]")))
+```
+
+```lisp
+(<-yaml #("1st" ()))
+```
+
+```lisp
+(<-yaml `(#:port . ,(current-output-port))
+  ((yaml<- "---\n---\n---\n[1,2,3]") 2))
+```
 
 ### Check the structure
 
