@@ -2,7 +2,7 @@
 
 This is a chicken scheme egg,
 section structure will follow
-- [http://wiki.call-cc.org/eggs%20tutorial#sections](http://wiki.call-cc.org/eggs%20tutorial#sections).
+- [http://wiki.call-cc.org/eggs%20tutorial#sections](http://wiki.call-cc.org/eggs%20tutorial#sections)
 
 ## Authors
 
@@ -18,6 +18,10 @@ section structure will follow
   - https://github.com/riku-ri/varg.ss
 
 ## API
+
+```
+(import libyaml)
+```
 
 ### Exception
 
@@ -39,7 +43,6 @@ More specifically, they would be:
     the composite kind would be `(exn libyaml <p>)`
 - in the `exn` field, it will contain properties listed below:
   - `'message`
-  - `'call-chain`
 
 ### Values in `yaml.h`
 
@@ -48,250 +51,256 @@ export enum members and functions in
 [*yaml.h*](https://github.com/yaml/libyaml/blob/master/include/yaml.h) from
 [yaml/libyaml<sub>git</sub>](https://github.com/yaml/libyaml).
 
-Functions and enum members can be used in scheme code directly.
+Functions and enum members can be used in scheme code as
+scheme variable or procedure.
 
 > Note that you may install libyaml development package in your system,
 > but [libyaml.ss<sub>git</sub>](.) will use the *yaml.h* in
 > submodule *src/libyaml* but not the yaml.h in your system
 
-### YAML and Scheme
+### yaml and scheme
 
-![](yns.svg)
+The chart below define mapping between yaml structure and scheme structure.
 
-<!--
+Note that the top level API did not return the structures here,
+but a procedure that generate them.
+See *#Read YAML#* section below.
 
-### Read yaml file or string
+![](yns/yns.svg)
 
-```
-(yaml<- [ARGUMENTS]) ==> SCHEME-YAML-OBJECT
-```
-
-#### `SCHEME-YAML-OBJECT`
-
-> As you will seen below,
-> [libyaml.ss<sub>git</sub>](.) define yaml document to vector.
-> Hence **A complete yaml object in scheme is always a vector**.
-> This means if provide a non-vector object as yaml content,
-> like `(yaml<- (list 1 2))` will lead to error.
-
-##### Examples
-
-```yaml
----
-- .NaN
-- -.inf
----
-string
-...
-```
-
-will be
-
-```
-(vector (list +nan.0 -inf.0) "string")
-```
-
----
-
-```yaml
-a: b
-c:
-  - 1
-  - 2
-d:
-  e: f
-g:
-```
-
-will be
+### Read yaml
 
 ```lisp
-(vector
-	(lambda ()
-		(list
-			(cons "a" "b")
-			(cons "c" (list 1 2))
-			(cons "d" (lambda () (list (cons "e" "f"))))
-			(cons "g" (list))
-		)
-	)
+(yaml<- |Parameters| . ...)
+```
+
+#### Return value
+
+`yaml<-` will return a **procedure** that generate yaml-documents:
+- the **procedure** take 1 or no parameter
+  - if 1 parameter, it must be a positive integer or `-1`
+    - for -1, return a scheme-list of all yaml-document
+    - for positive integer ***n***, return the ***n***th document.
+      Index from `0` but not `1`
+  - if no parameter, return the 1st document.
+    Equal to parameter is `0`
+
+For example:
+- `(yaml<- "--- 1\n--- 2\n...")` will return a procedure
+- `((yaml<- "--- 1\n--- 2\n..."))` will return `1`
+- `((yaml<- "--- 1\n--- 2\n...") 0)` will return `1`
+- `((yaml<- "--- 1\n--- 2\n...") 1)` will return `2`
+- `((yaml<- "--- 1\n--- 2\n...") -1)` will return `'(1 2)`
+- `((yaml<- "--- 1\n--- 2\n...") 2)` will abort by exception
+
+#### Parameters
+
+Parameters to `yaml<-` can be
+a sequence that contain 1 or more element listed below,
+order is not sensitive:
+
+- yaml input
+  - *format*:
+    - String or input port
+  - *description*:
+    - Read yaml from it.
+    - If it was a port and `#:close-input-port` was not set,
+      you need to close it manually if necessary.
+    - when it was string, it should be yaml content but not file path
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - `(current-input-port)` will be used
+- `#:close-input-port`
+  - *format*:
+    - set or not
+  - *description*:
+    - If finally close the input port when yaml input is a port
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - The port will keep opened
+- `#:encoding`
+  - *format*:
+    - `(cons #:encoding ?)`
+      - Where `?` should be one of below:
+        - `YAML_ANY_ENCODING`
+        - `YAML_UTF8_ENCODING`
+        - `YAML_UTF16LE_ENCODING`
+        - `YAML_UTF16BE_ENCODING`
+  - *description*:
+    - Set encoding to `?` when reading yaml
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - Dependes on the source in [git/yaml/libyaml](git/yaml/libyaml).
+      Currently `YAML_ANY_ENCODING` should be used if not set
+
+#### e.g.
+```lisp
+((yaml<- "--- 1\n--- 2\n...") 1)
+```
+
+```lisp
+(yaml<-
+  (open-input-file "/dev/null")
+  `(#:encoding . ,YAML_UTF8_ENCODING)
+  #:close-input-port
 )
 ```
 
-#### Arguments
-
-- `'(#:input . INPUT)`  
-	`INPUT` should be a input port or yaml string.  
-	If not set, `yaml<-` will read yaml from `(current-input-port)`.
-
-	> `yaml<-` will auto close the input port if finished or failed.
-
-- `'(#:encoding . ENCODING)`  
-	Encoding of the yaml file or yaml string.
-	The value should be one of
-	`YAML_ANY_ENCODING`
-	`YAML_UTF8_ENCODING`
-	`YAML_UTF16LE_ENCODING`
-	`YAML_UTF16BE_ENCODING` .
-	That is the element of `enumml_encoding_e` defined in the C language header file
-	`yaml.h` from [yaml/libyaml](https://github.com/yaml/libyaml) .  
-	If not set, this will be `YAML_ANY_ENCODING` .
-
-##### Examples
-
 ```lisp
-(import libyaml)
-
-(write (yaml<-)) ; generally, this will read from stdin
-```
-
-> For example, after saving above code in a file named `tmp.scm`,
-> call The CHICKEN Scheme interpreter `csi` :  
-> `echo '[a,b,c]' | csi -s tmp.scm`  
-> will print `#(("a" "b" "c"))`
-
----
-
-```lisp
-(import yaml)
-(write (yaml<- `(#:input . ,(open-input-file "/tmp/tmp.yaml"))))
-```
-
-> You need to create file `/tmp/tmp.yaml` and write yaml content to it
-
----
-
-```lisp
-(import libyaml)
-
-(map print (list
-(yaml<- (cons #:encoding YAML_UTF8_ENCODING) '(#:input . "--- string"))
-(yaml<- '(#:input . "--- another string") `(#:encoding . ,YAML_ANY_ENCODING))
-))
-```
-
-### Dump yaml object
-
-```
-(<-yaml SCHEME-YAML-OBJECT [ARGUMENTS])
-```
-
-#### Arguments
-
-- `SCHEME-YAML-OBJECT` *necessary*  
-	The first argument to `<-yaml` must be a `SCHEME-YAML-OBJECT`.  
-	Generally this may be the result of `yaml<-`,
-	you can also construct a object manually follow the above structure definition in
-	*Read yaml file or string* section.
-- `'(#:indent . INDENT)`  
-	`INDENT` should be a integer, the indent size in the output yaml file
-- `'(#:port . PORT)`  
-	`PORT` should be a output port to write.  
-	If not set,  `<-yaml` will write to `(current-output-port)` .
-
-	> `<-yaml` will auto close the output port if finished or failed.
-
-- `'(#:encoding . ENCODING)`  
-	The same as `#:encoding` option in `yaml<-` .
-
-##### Examples
-
-```lisp
-(import libyaml)
-
-(let ((yaml (yaml<- '(#:input . "[a, b, c]"))))
-	(<-yaml yaml) ; generally, this will print to screen
-	(<-yaml yaml `(#:port . ,(open-output-file "/tmp/tmp.yaml"))) ; output to /tmp/tmp.yaml
-	; Note that do not quote the port
-	(<-yaml yaml '(#:indent . 4) `(#:encoding . ,YAML_UTF8_ENCODING))
+(call-with-input-file "/dev/null"
+  ;`call-with-input-file` will close the port,
+  ;so don't set `#:close-input-port` in `yaml<-`
+  (lambda (file) (display ((yaml<- file) -1)))
 )
 ```
 
-### More about yaml-mapping
-
-#### Show the yaml-mapping
-
-As definition in *Read yaml file or string* section,
-yaml-mapping will be a procedure that generate a "association list".
-So `print` `display` them will just show a hided procedure but not its content.
-`map-fixed-yaml<-` will recursively sort a `SCHEME-YAML-OBJECT` and
-replace procedure to its result.
+### Dump yaml
 
 ```
-(map-fixed-yaml<- SCHEME-YAML-OBJECT [ARGUMENTS])
+(<-yaml |Parameters| . ...)
 ```
 
-Arguments :
-- `SCHEME-YAML-OBJECT` *necessary*  
-	The same as `<-yaml`
-- `'(#:swap-when . COMPARE)`  
-	The compare procedure for sorting.  
-	This should be a lambda that accept 2 arguments.
-	`map-fixed-yaml<-` will apply this lambda to each 2 yaml-mapping keys,
-	if this lambda return true, then swap them.  
-	If not set, `map-fixed-yaml<-` will sort by scheme function `string>?`  
-	For example:
-	- For a yaml content `{1: 2, 3: 4}`, `yaml<-` will parse it to `(list (lambda () '((1 . 2) (3 . 4))))`.  
-	If `COMPARE` is `(lambda (l r) (< l r))`,
-	means if the left key(here is `1`) is smaller than the right key(here is `3`),
-	then swap them.  
-	Hence `map-fixed-yaml<-` with this `#:swap-when` option will generate
-	`(list '((3 . 4) (1 . 2)))`, swap the key-value pair.
+#### Return value
 
-**Note** that the result of `map-fixed-yaml<-` is
-**different** from the original `SCHEME-YAML-OBJECT` .
-Because it replace the procedure to list,
-so you cannot distinguish yaml-mapping and yaml-list in it.
+- If `#:close-output-port` was set
+  - return result of `close-output-port`
+- If `#:close-output-port` was not set
+  - return `(void)`
 
-#### Check if a key is in yaml-mapping
+And `<-yaml` will output the yaml content to the output port.
 
+For example:
+- `(<-yaml ((yaml<- "1")))` will output `--- 1` to `(current-output-port)`
+
+#### Parameters
+
+- Scheme structure to be output
+  - *format*:
+    - Refer to *#yaml and scheme#* section,
+      Any valid (nested)structure listed in the chart,
+      and no need to wrap the scheme structure in a procedure by default.
+      See `#:strict-input` below.
+  - *description*:
+    - Convert the scheme structure to yaml
+      according to *#yaml and scheme#* section
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - `(current-output-port)` will be used
+- `#:strict-input`
+  - *format*:
+    - set or not
+  - *description*:
+    - As mentioned `yaml<-` return value above,
+      it is a procedure to generate yaml structure.
+      But generally it makes no sense to wrap a structure to a procedure
+      before dumping it.
+      So `<-yaml` does not require a procedure,
+      but the real structure by default.
+
+      If a strict input formatted like return value of `yaml<-` is necessary,
+      set `#:strict-input` and
+      `<-yaml` will check if the to be outputed parameter totally match
+      the format of `yaml<-` return value
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - `yaml<-` will not strictly check
+      if the structure to be outputed match the format of `yaml<-` return value
+- `#:port`
+  - *format*:
+    - `(cons #:port ?)`
+      - Where `?` should be a output port
+  - *description*:
+    - Output yaml content to the port
+    - If it was a port and `#:close-out-port` was not set,
+      you need to close it manually if necessary.
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - `(current-output-port)` will be used
+- `#:close-output-port`
+  - *format*:
+    - set or not
+  - *description*:
+    - If finally close the value of `#:port`
+  - *if-necessary*:
+    - No
+  - *if-not-set*:
+    - The port will keep opened
+- `#:encoding`
+  > The same as `#:encoding` parameter to `yaml<-`
+
+### Check the structure
+
+---
+
+```lisp
+(yaml? ?)
 ```
-(in-yaml-map? MAPPING KEY)
+
+Recursively check if `?` match format of `yaml<-` output
+
+---
+
+```lisp
+(ydoc? ?)
 ```
 
-`in-yaml-map?` will return `#t` if `KEY` is in `MAPPING`.
-As definition in *Read yaml file or string* section,
-`MAPPING` should be a procedure that generate a "association list".
+Recursively check if `?` is a scheme structure that match a yaml-document
 
-`in-yaml-map?` will compare by `equal?`
+---
 
-```
-(in-yaml-map?? MAPPING KEY)
-(in-yaml-map??? MAPPING KEY)
+```lisp
+(ymap? ?)
+(ymap?? ?)
 ```
 
-Similar to `in-yaml-map?`,
-but `in-yaml-map??` will compare by `epv?`,
-`in-yaml-map???` will compare by `ep?`.
+Check if `?` is a scheme structure that match a yaml-mapping
+
+`ymap?` only check the top level, a list that only contain 1 alist
+
+`ymap??` will recursively check if each part of `?` is a legal structure
+
+---
+
+```lisp
+(ylist? ?)
+(ylist?? ?)
+```
+
+Similar to `ymap?` and `ymap??` but check yaml-list not yaml-mapping
+
+---
+
+```lisp
+(yscalar? ?)
+```
+
+Check if `?` is a scheme object that match to a yaml-scalar
+
+---
 
 ## Examples
 
-```lisp
-(import libyaml)
+[yns/](yns/) provide some example to convert [yns/yns.yaml](yns/yns.yaml)
+to different formats.
 
-(set! yaml (yaml<- `(#:input . "{c: d, a: b}")))
-(map print (list
-yaml ; will be a list that only contain 1 procedure (#<procedure>)
-(map-fixed-yaml<- yaml) ; ==> #(((a . b) (c . d)))
-(procedure? yaml) ; ==> #f the top-level is always a list of yaml-document
-(list? (vector-ref yaml 0)) ; ==> #f
-(procedure? (vector-ref yaml 0)) ; ==> #t this way to check if it is a yaml-mapping
-; (in-yaml-map? yaml "a") ; ==> ERROR because the top level is always a list but not mapping
-(in-yaml-map? (vector-ref yaml 0) "a") ; ==> #t
-(in-yaml-map? (vector-ref yaml 0) "x") ; ==> #f
-))
+It was recommended to see [yns/yns.yaml2html.ss](yns/yns.yaml2html.ss)
+at first.
 
-(set! yaml (yaml<- `(#:input . "[1, 2, -.inf, string]")))
-(map print (list
-yaml ; ==> #((1 2 -inf.0 "string"))
-(list? (vector-ref yaml 0)) ; ==> #t
-(map number? (vector-ref yaml 0)) ; ==> (#t #t #t #f)
-))
-```
+And actually chart in *#yaml and scheme#* section
+was from programs in [yns/](yns/) .
 
----
+For [yns/yns.yaml](yns/yns.yaml), the structure was defined by me,
+so I totally know how the structure should be.
+The example below shows how to deal with
+a yaml content you may not know the structure.
 
-Content of `tmp.yaml`:
+For a yaml content:
 ```yaml
 - replace me: This will be changed
 - a internal mapping:
@@ -303,65 +312,62 @@ Content of `tmp.yaml`:
 - 3.32 # number, also ignored
 ```
 
-Content of `tmp.scm`:
-> Replace all `replace me` to `HERE` when it is a element of list,
-> or replace the value of it if the mapping key is `replace me`
+Assuming it was saved in file `/tmp/tmp.yaml`,
+we don't know the content of it,
+but we need to modify its content:
+- if `replace me` is a key of mapping, replace the value to `<HERE>`
+- if `replace me` is a member of list, replace itself to `<HERE>`
+
+The scheme program using `libyaml` can be:
 ```lisp
 (import libyaml)
 
-(define (replace-yaml-document yaml)
-	(cond
-		((list? yaml) (map replace-yaml-document yaml))
-		((procedure? yaml)
-			(let ((mapping (yaml)))
-				(lambda ()  ; keep making mapping a procedure to distinguish mapping and list in the result
-					(map
-						(lambda (pair)
-							(let*
-								(
-									(key
-										(cond
-											((procedure? (car pair)) (replace-yaml-document (car pair))) ; the key of mapping is a mapping
-											((list? (car pair)) (replace-yaml-document (car pair))) ; the key of mapping is a list
-											(else (car pair))
-										))
-									(value
-										(if (string? key)
-											(if (string=? key "replace me")
-												"HERE"
-												(replace-yaml-document (cdr pair)))
-											(replace-yaml-document (cdr pair))))
-								)
-								(cons key value)
-							))
-						mapping
-					))))
-		(else
-			(if (string? yaml)
-				(if (string=? yaml "replace me") "HERE" yaml)
-				yaml))
-	)
-)
-
-(let ((yaml (vector->list (yaml<- `(#:input . ,(open-input-file "tmp.yaml"))))))
-	(print (list->vector (map replace-yaml-document yaml))) ; mapping will not print
-	(print (map-fixed-yaml<- (list->vector (map replace-yaml-document yaml)))) ; mapping will be print
-	(print (make-string 32 #\#))
-	(<-yaml (list->vector (map replace-yaml-document yaml))) ; print to stdout, generally screen
-)
+(call-with-input-file "/tmp/tmp.yaml" (lambda (yaml)
+  (let*
+    (
+      (yaml ((yaml<- yaml)))
+      ; don't forget to index document from procedure
+    )
+    (define (replace-replace-me Y) (cond
+      ((ymap? Y) (let ((alist (car Y)))
+        (list ; Don't forget to wrap alist to match yaml-mapping format here
+          (map
+            (lambda (pair) (if (equal? (car pair) "replace me")
+              (cons (car pair) "<HERE>")
+              (cons (replace-replace-me (car pair)) (replace-replace-me (cdr pair)))
+            ))
+            alist
+          )
+        )
+      ))
+      ((ylist? Y) (let ((slist (vector->list Y)))
+        (list->vector ; Don't forget to convert back to vector to match yaml-list format here
+          (map
+            (lambda (list-unit) (if (equal? list-unit "replace me")
+              "<HERE>"
+              (replace-replace-me list-unit)
+            ))
+            slist
+          )
+        )
+      ))
+      (else Y)
+    ))
+    (<-yaml (replace-replace-me yaml) #:close-output-port)
+  )
+))
 ```
 
-Output:
-```
-#((#<procedure (?)> #<procedure (?)> HERE (HERE) ignored 3.32 3.32))
-#((((replace me . HERE)) ((a internal mapping (replace me . HERE))) HERE (HERE) ignored 3.32 3.32))
-################################
+Save the yaml content to `/tmp/tmp.yaml`,
+save the scheme program to `/tmp/tmp.ss`,
+`csi -s tmp.ss` will generate:
+```yaml
 ---
-- replace me: HERE
+- replace me: <HERE>
 - a internal mapping:
-    replace me: HERE
-- HERE
-- - HERE
+    replace me: <HERE>
+- <HERE>
+- - <HERE>
 - ignored
 - '3.32'
 - 3.32
@@ -371,7 +377,3 @@ Output:
 ## License
 
 MIT
-
-## Version History
-
--->

@@ -8,6 +8,21 @@
 
 (define (display* ^ . ..) (map display (cons ^ ..)))
 
+(display*
+	"\\input luaotfload.sty\\relax"
+	"\\global\\headline={}"
+	"\\global\\footline={}"
+	"\\font\\rm={[cmunui]} at 20pt"
+	"\\font\\bf={[cmunbl]} at 20pt"
+	"\\font\\tt={[TerminusTTF]} at 20pt"
+	"\\rm"
+	"\\openup.33em"
+	"\\lineskiplimit=0pt"
+)
+(display "\\setbox0=")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (display "\\hbox{\\maxdepth=0pt\\relax")
 (display*
 	"\\def\\vlines{"
@@ -214,3 +229,16 @@
 ))
 
 (display "}")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(display*
+	"\\pagewidth=\\wd0"
+	"\\pageheight=\\ht0"
+	"\\pageleftoffset=0pt"
+	"\\pagerightoffset=0pt"
+	"\\pagetopoffset=0pt"
+	"\\pagebottomoffset=0pt"
+	"\\box0"
+	"\\bye"
+)
