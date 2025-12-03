@@ -191,9 +191,9 @@ For example:
     - Convert the scheme structure to yaml
       according to *#yaml and scheme#* section
   - *if-necessary*:
-    - No
+    - YES
   - *if-not-set*:
-    - `(current-output-port)` will be used
+    - Abort a condition
 - `#:strict-input`
   - *format*:
     - set or not
