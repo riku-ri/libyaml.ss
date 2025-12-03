@@ -1,0 +1,22 @@
+\input luatexja.sty
+
+\global\headline={}
+\global\footline={}
+\font\rm={[cmunui]} at 20pt
+\font\bf={[cmunbl]} at 20pt
+\font\tt={[TerminusTTF]} at 20pt
+\rm
+
+\openup.33em
+\lineskiplimit=0pt
+
+\setbox0=\input data.tex
+\pagewidth=\wd0
+\pageheight=\ht0
+\pageleftoffset=0pt
+\pagerightoffset=0pt
+\pagetopoffset=0pt
+\pagebottomoffset=0pt
+\box0
+
+\bye

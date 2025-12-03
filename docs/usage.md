@@ -56,11 +56,14 @@ Functions and enum members can be used in scheme code directly.
 
 ### YAML and Scheme
 
+![](yns.svg)
+
+<!--
 
 ### Read yaml file or string
 
 ```
-(yaml<- [ARGUMENTS]) --> SCHEME-YAML-OBJECT
+(yaml<- [ARGUMENTS]) ==> SCHEME-YAML-OBJECT
 ```
 
 #### `SCHEME-YAML-OBJECT`
@@ -269,20 +272,20 @@ but `in-yaml-map??` will compare by `epv?`,
 (set! yaml (yaml<- `(#:input . "{c: d, a: b}")))
 (map print (list
 yaml ; will be a list that only contain 1 procedure (#<procedure>)
-(map-fixed-yaml<- yaml) ; --> #(((a . b) (c . d)))
-(procedure? yaml) ; --> #f the top-level is always a list of yaml-document
-(list? (vector-ref yaml 0)) ; --> #f
-(procedure? (vector-ref yaml 0)) ; --> #t this way to check if it is a yaml-mapping
-; (in-yaml-map? yaml "a") ; --> ERROR because the top level is always a list but not mapping
-(in-yaml-map? (vector-ref yaml 0) "a") ; --> #t
-(in-yaml-map? (vector-ref yaml 0) "x") ; --> #f
+(map-fixed-yaml<- yaml) ; ==> #(((a . b) (c . d)))
+(procedure? yaml) ; ==> #f the top-level is always a list of yaml-document
+(list? (vector-ref yaml 0)) ; ==> #f
+(procedure? (vector-ref yaml 0)) ; ==> #t this way to check if it is a yaml-mapping
+; (in-yaml-map? yaml "a") ; ==> ERROR because the top level is always a list but not mapping
+(in-yaml-map? (vector-ref yaml 0) "a") ; ==> #t
+(in-yaml-map? (vector-ref yaml 0) "x") ; ==> #f
 ))
 
 (set! yaml (yaml<- `(#:input . "[1, 2, -.inf, string]")))
 (map print (list
-yaml ; --> #((1 2 -inf.0 "string"))
-(list? (vector-ref yaml 0)) ; --> #t
-(map number? (vector-ref yaml 0)) ; --> (#t #t #t #f)
+yaml ; ==> #((1 2 -inf.0 "string"))
+(list? (vector-ref yaml 0)) ; ==> #t
+(map number? (vector-ref yaml 0)) ; ==> (#t #t #t #f)
 ))
 ```
 
@@ -370,3 +373,5 @@ Output:
 MIT
 
 ## Version History
+
+-->

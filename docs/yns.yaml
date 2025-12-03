@@ -1,5 +1,16 @@
 - des:
     yaml: |-
+      yaml description
+    ss: |-
+     scheme description
+  e.g.:
+  - yaml: |-
+      yaml e.g.
+    ss: |-
+      scheme e.g.
+
+- des:
+    yaml: |-
       null
     ss: |-
       empty list
@@ -30,7 +41,7 @@
     yaml: |-
       mapping
     ss: |-
-      A list contain only 1 "association list"
+      A list only contain 1 "association list"
   e.g.:
   - yaml: |-
       {key: value}
@@ -44,7 +55,6 @@
       vector
   e.g.:
   - yaml: |-
-      #
       - 1
       - 2
       - 3
@@ -87,6 +97,7 @@
       0.5
     ss: |-
       0.5
+      (exact->inexact (/ 1 2))
   - yaml: |-
       0o10
     ss: |-
