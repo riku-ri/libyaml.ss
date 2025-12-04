@@ -64,7 +64,7 @@ The chart below define mapping between yaml structure and scheme structure.
 
 Note that the top level API did not return the structures here,
 but a procedure that generate them.
-See *#Read YAML#* section below.
+See *#Read yaml#* section below.
 
 ![](yns/yns.svg)
 
@@ -189,7 +189,7 @@ For example:
       See `#:strict-input` below.
   - *description*:
     - Convert the scheme structure to yaml
-      according to *#yaml and scheme#* section
+      according to the definition in *#yaml and scheme#* section
   - *if-necessary*:
     - YES
   - *if-not-set*:
@@ -312,8 +312,9 @@ Check if `?` is a scheme object that match to a yaml-scalar
 [yns/](yns/) provide some example to convert [yns/yns.yaml](yns/yns.yaml)
 to different formats.
 
-It was recommended to see [yns/yns.yaml2html.ss](yns/yns.yaml2html.ss)
-at first.
+It was recommended to begin with
+[yns/yns.yaml2html.ss](yns/yns.yaml2html.ss)
+because it is mutch simpler than others.
 
 And actually chart in *#yaml and scheme#* section
 was from programs in [yns/](yns/) .
