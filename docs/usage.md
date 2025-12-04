@@ -220,7 +220,7 @@ For example:
       - Where `?` should be a output port
   - *description*:
     - Output yaml content to the port
-    - If it was a port and `#:close-out-port` was not set,
+    - If `#:port` was set and `#:close-out-port` was not set,
       you need to close it manually if necessary.
   - *if-necessary*:
     - No
