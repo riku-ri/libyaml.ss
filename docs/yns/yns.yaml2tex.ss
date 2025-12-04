@@ -15,7 +15,7 @@
 	"\\input luaotfload.sty\\relax"
 	"\\global\\headline={}"
 	"\\global\\footline={}"
-	"\\font\\rm={[cmunssdc]} scaled\\magstep2"
+	"\\font\\rm={[cmunss]} scaled\\magstep2"
 	"\\font\\bf={[cmunso]} scaled\\magstep2"
 	"\\font\\tt={[MonaspaceArgon-Regular]} scaled\\magstephalf"
 	"\\rm"
