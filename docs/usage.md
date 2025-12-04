@@ -71,7 +71,7 @@ See *#Read YAML#* section below.
 ### Read yaml
 
 ```lisp
-(yaml<- |Parameters| . ...)
+(yaml<- . |Parameters|)
 ```
 
 #### Return value
@@ -164,7 +164,7 @@ a sequence that contain 1 or more element listed below,
 order is not sensitive:
 
 ```
-(<-yaml |Parameters| . ...)
+(<-yaml . |Parameters|)
 ```
 
 #### Return value
