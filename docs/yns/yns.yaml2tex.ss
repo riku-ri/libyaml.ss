@@ -16,7 +16,7 @@
 	"\\global\\headline={}"
 	"\\global\\footline={}"
 	"\\font\\rm={[cmunss]} scaled\\magstep2"
-	"\\font\\bf={[cmunso]} scaled\\magstep2"
+	"\\font\\bf={[cmunsx]} scaled\\magstep2"
 	"\\font\\tt={[MonaspaceArgon-Regular]} scaled\\magstephalf"
 	"\\rm"
 	"\\openup.33em"
@@ -160,13 +160,13 @@
 		((null? /c) "")
 		((string? (car /c))
 			(string+
-				"\\hrule" "\\hbox{" "\\vrule" "\\vbox{" "\\vskip.33em" "\\hbox{" "\\hskip1.33ex"
+				"\\hrule height 0.1pt" "\\hbox{" "\\vrule width 0.1pt" "\\vbox{" "\\vskip.33em" "\\hbox{" "\\hskip1.33ex"
 				"\\hbox to\\dimen\\rowdim{" "\\strut" "\\vbox to\\dimen" index "{" "\\vfil"
 					"\\vbox{"
 						"\\hsize=\\dimen\\rowdim" (car /c)
 					"}"
 				"\\vfil" "}" "\\strut" "}"
-				"}" "\\vskip.33em" "}" "\\hskip1.33ex" "\\vrule" "}" "\\hrule"
+				"}" "\\vskip.33em" "}" "\\hskip1.33ex" "\\vrule width 0.1pt" "}" "\\hrule height 0.1pt"
 				(/c->vbox (cdr /c) (+ index 1))
 			)
 		)
