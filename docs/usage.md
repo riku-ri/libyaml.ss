@@ -314,7 +314,7 @@ to different formats.
 
 It was recommended to begin with
 [yns/yns.yaml2html.ss](yns/yns.yaml2html.ss)
-because it is mutch simpler than others.
+because it is much simpler than others.
 
 And actually chart in *#yaml and scheme#* section
 was from programs in [yns/](yns/) .
