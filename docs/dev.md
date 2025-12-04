@@ -30,14 +30,6 @@ end
 foreign
 --generate--> 2src/yaml.h.ss
 
-2src/yaml.h.ss
---> libyaml.egg
-style varg.ss stroke-dasharray: 5 5
-varg.ss((varg.ss))
--. import .-o src/libyaml/*.ss
---> libyaml.egg
-varg.ss -. installed by .-> chicken-install
-
 git/yaml/libyaml
 --> autoreconf[/$ autoreconf -fi/]
 style autoreconf stroke-dasharray: 5 5
@@ -46,16 +38,24 @@ autoreconf --> configure[/$ ./configure/]
 end
 style configure stroke-dasharray: 5 5
 
+2src/yaml.h.ss
+==> libyaml.egg
+style varg.ss stroke-dasharray: 5 5
+varg.ss((varg.ss))
+-. import .-o src/libyaml/*.ss
+==> libyaml.egg
+varg.ss -. installed by .-> chicken-install
+
 configure
 --generate--> git/yaml/libyaml/include/config.h
 --copy--> include/config.h
 -. #include .-o git/yaml/libyaml/src/*.c
---> libyaml.egg
+==> libyaml.egg
 
 include/config.h
 -. set include path in .-> libyaml.egg 
 
 libyaml.egg
---> chicken-install[/chicken-install/]
+==> chicken-install[/chicken-install/]
 style chicken-install stroke-dasharray: 5 5
 ```
