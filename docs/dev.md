@@ -52,7 +52,7 @@ configure
 
 libyaml.egg -. set include path .-> include/config.h
 
-END(installation)
 libyaml.egg
---> END
+--> chicken-install[/chicken-install/]
+style chicken-install stroke-dasharray: 5 5
 ```
