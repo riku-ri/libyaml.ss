@@ -70,33 +70,6 @@
 		'(("\n" . "<br/>") ("<" . "&lt;") (">" . "&gt;") ("\"" . "&quot;"))
 	)))
 ) (let* ((<ylist> (vector->list yaml)))
-(let-syntax (
-	(?? (syntax-rules()
-		((?? to-check p ...)
-			(if (not (and*
-					(map (lambda (@) (@ to-check))
-						(foldr
-							(lambda (l r) (cond
-								((and (equal? l not) (not (null? r)))
-									(cons (compose not (car r)) (cdr r)))
-								(else (cons l r))
-							))
-							'()
-							(list p ...)
-						))
-				))
-				(abort(condition `(exn message
-					,(string+ '(p ...) '? " NO:\n" (~S to-check)))))
-			)
-		)
-	))
-	(list-ref* (syntax-rules()
-		((list-ref i /l) (if (>= i 0)
-			(list-ref /l i)
-			(list-ref /l (+ (length /l) i))
-		))
-	))
-)
 
 ;(printf "
 ;<style>
@@ -107,8 +80,12 @@
 ;pre { display: inline; }
 ;</style>
 ;")
-(printf "<table>")
 
+;; simpler steps here
+;; - no formatting, such as bold the title
+;; - no converting particular character like < >
+;; - no constructing, treat the input as stream, just output when it meet a line/cell
+;(printf "<table>")
 ;(printf "<tr>
 ;<th><i>yaml description<i></th>
 ;<th><i>scheme description<i></th>
@@ -141,12 +118,13 @@
 ;			)
 ;		)
 ;		(printf "</table></td>")
-;
 ;		(printf "</tr>")
 ;	)
 ;	<ylist>
 ;)
 ;(printf "</table>")
+
+(printf "<table>")
 
 (define (transpose list-of-list)
 	(if (and* (map null? list-of-list))
@@ -209,6 +187,6 @@
 (display (/tab->html /t/r/c))
 ;(display (/tab->html (transpose /t/r/c)))
 
-))
+)
 
 ))
