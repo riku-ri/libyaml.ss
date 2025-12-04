@@ -12,28 +12,45 @@ libclang([libclang])
 --link--> clang++[/clang++ -lclang/]
 style libclang stroke-dasharray: 5 5
 2src/yaml.h.cc
---input--> clang++[/clang++ -lclang/]
+--> clang++[/clang++ -lclang/]
 style clang++ stroke-dasharray: 5 5
 clang++[/$ clang++ -lclang/]
--- output --> foreign[/./foreign/]
+--generate --> foreign[/$ foreign/]
 style foreign stroke-dasharray: 5 5
 
 git/yaml/libyaml
 --> git/yaml/libyaml/include/yaml.h
---#include--o 2src/yaml.h
+-. #include .-o 2src/yaml.h
 --input from command line arg-->foreign
 
+subgraph "run in libyaml.ss repo root path"
 foreign
--- output --> 2src/yaml.h.ss
+end
+
+foreign
+--generate--> 2src/yaml.h.ss
 
 2src/yaml.h.ss
 --> libyaml.egg
 style varg.ss stroke-dasharray: 5 5
 varg.ss((varg.ss))
---import--> src/libyaml/*.ss
+-. import .-o src/libyaml/*.ss
 --> libyaml.egg
-git/yaml/libyaml/src/*.c
+
+git/yaml/libyaml
+--> autoreconf[/$ autoreconf -fi/]
+style autoreconf stroke-dasharray: 5 5
+subgraph "run in libyamlsubmodule root path"
+autoreconf --> configure[/$ ./configure/]
+end
+
+configure
+--generate--> git/yaml/libyaml/include/config.h
+--copy--> include/config.h
+-. #include .-o git/yaml/libyaml/src/*.c
 --> libyaml.egg
+
+libyaml.egg -. set include path .-> include/config.h
 
 END(installation)
 libyaml.egg
