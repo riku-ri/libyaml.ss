@@ -5,7 +5,7 @@
 ```mermaid
 flowchart
 
-yaml/libyaml[(https:/github.com/yaml/libyaml)]
+yaml/libyaml[(https://github.com/yaml/libyaml)]
 --submodule--> git/yaml/libyaml --> git/yaml/libyaml/src/*.c
 
 libclang([libclang])
