@@ -23,7 +23,7 @@ git/yaml/libyaml
 -. #include .-o 2src/yaml.h
 --input from command line arg-->foreign
 
-subgraph "run in libyaml.ss repo root path"
+subgraph "run at libyaml.ss repo root path"
 foreign
 end
 
@@ -40,7 +40,7 @@ varg.ss((varg.ss))
 git/yaml/libyaml
 --> autoreconf[/$ autoreconf -fi/]
 style autoreconf stroke-dasharray: 5 5
-subgraph "run in libyamlsubmodule root path"
+subgraph "run at libyaml submodule root path"
 autoreconf --> configure[/$ ./configure/]
 end
 
