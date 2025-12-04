@@ -17,7 +17,7 @@
 	"\\global\\footline={}"
 	"\\font\\rm={[cmunssdc]} scaled\\magstep2"
 	"\\font\\bf={[cmunso]} scaled\\magstep2"
-	"\\font\\tt={[MonaspaceArgon-Regular]} scaled\\magstep2"
+	"\\font\\tt={[MonaspaceArgon-Regular]} scaled\\magstep1"
 	"\\rm"
 	"\\openup.33em"
 	"\\lineskiplimit=0pt"
