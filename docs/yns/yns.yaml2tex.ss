@@ -8,13 +8,16 @@
 
 (define (display* ^ . ..) (map display (cons ^ ..)))
 
+(print "\\relax")
+; Relax
+
 (display*
 	"\\input luaotfload.sty\\relax"
 	"\\global\\headline={}"
 	"\\global\\footline={}"
-	"\\font\\rm={[cmunui]} at 20pt"
-	"\\font\\bf={[cmunbl]} at 20pt"
-	"\\font\\tt={[TerminusTTF]} at 20pt"
+	"\\font\\rm={[cmunssdc]} scaled\\magstep2"
+	"\\font\\bf={[cmunso]} scaled\\magstep2"
+	"\\font\\tt={[MonaspaceArgon-Regular]} scaled\\magstep2"
 	"\\rm"
 	"\\openup.33em"
 	"\\lineskiplimit=0pt"
@@ -61,7 +64,7 @@
 	"}"
 )
 
-(set! yaml ((yaml<-  #:close-input-port (open-input-file "yns.yaml"))))
+(set! yaml ((yaml<-)))
 (define (~S ?) (sprintf "~S" ?))
 (define (list-set! toset /l i) (set-car! (list-tail /l i) toset))
 (define (string->/line ?) (string-split ? "\n" #t))
