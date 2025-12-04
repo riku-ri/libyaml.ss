@@ -36,6 +36,7 @@ style varg.ss stroke-dasharray: 5 5
 varg.ss((varg.ss))
 -. import .-o src/libyaml/*.ss
 --> libyaml.egg
+varg.ss -. installed by .-> chicken-install
 
 git/yaml/libyaml
 --> autoreconf[/$ autoreconf -fi/]
@@ -50,7 +51,8 @@ configure
 -. #include .-o git/yaml/libyaml/src/*.c
 --> libyaml.egg
 
-libyaml.egg -. set include path .-> include/config.h
+include/config.h
+-. set include path in .-> libyaml.egg 
 
 libyaml.egg
 --> chicken-install[/chicken-install/]
