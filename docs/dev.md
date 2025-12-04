@@ -44,6 +44,7 @@ style autoreconf stroke-dasharray: 5 5
 subgraph "run at libyaml submodule root path"
 autoreconf --> configure[/$ ./configure/]
 end
+style configure stroke-dasharray: 5 5
 
 configure
 --generate--> git/yaml/libyaml/include/config.h
