@@ -14,8 +14,8 @@ style libclang stroke-dasharray: 5 5
 2src/yaml.h.cc
 --input--> clang++[/clang++ -lclang/]
 style clang++ stroke-dasharray: 5 5
-clang++[/clang++ -lclang/]
--- output --> foreign[/foreign/]
+clang++[/$ clang++ -lclang/]
+-- output --> foreign[/./foreign/]
 style foreign stroke-dasharray: 5 5
 
 git/yaml/libyaml
@@ -28,7 +28,9 @@ foreign
 
 2src/yaml.h.ss
 --> libyaml.egg
-src/libyaml/*.ss
+style varg.ss stroke-dasharray: 5 5
+varg.ss((varg.ss))
+--import--> src/libyaml/*.ss
 --> libyaml.egg
 git/yaml/libyaml/src/*.c
 --> libyaml.egg
