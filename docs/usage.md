@@ -159,9 +159,6 @@ order is not sensitive:
 
 ### Dump yaml
 
-Parameters to `yaml<-` can be
-a sequence that contain 1 or more element listed below,
-order is not sensitive:
 
 ```
 (<-yaml . |Parameters|)
@@ -180,6 +177,10 @@ For example:
 - `(<-yaml ((yaml<- "1")))` will output `--- 1` to `(current-output-port)`
 
 #### Parameters
+
+Parameters to `<-yaml` can be
+a sequence that contain 1 or more element listed below,
+order is not sensitive:
 
 - Scheme structure to be output
   - *format*:
