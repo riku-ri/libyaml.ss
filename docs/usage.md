@@ -78,7 +78,7 @@ See *#Read yaml#* section below.
 
 `yaml<-` will return a **procedure** that generate yaml-documents:
 - the **procedure** take 1 or no parameter
-  - if 1 parameter, it must be a positive integer or `-1`
+  - if 1 parameter, it must be a non-negative integer or `-1`
     - for -1, return a scheme-list of all yaml-document
     - for positive integer ***n***, return the ***n***th document.
       Index from `0` but not `1`
