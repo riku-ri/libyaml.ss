@@ -19,7 +19,7 @@
 	"\\font\\bf={[cmunsx]} scaled\\magstep2"
 	"\\font\\tt={[MonaspaceArgon-Regular]} scaled\\magstephalf"
 	"\\rm"
-	"\\openup.5em"
+	"\\openup.4em"
 )
 (display "\\setbox0=")
 
