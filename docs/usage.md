@@ -310,6 +310,9 @@ Check if `?` is a scheme object that match to a yaml-scalar
 
 ## Examples
 
+In the API section, in each API subsection,
+there are examples for single call at the tail of subsection.
+And here is a complete example including read/write/modify.
 For a yaml content:
 ```yaml
 - replace me: This will be changed
@@ -384,15 +387,17 @@ save the scheme program to `/tmp/tmp.ss`,
 ...
 ```
 
+---
+
 Besides, [yns/](yns/) provide some example to convert [yns/yns.yaml](yns/yns.yaml)
 to different formats.
+
+And actually chart in *#yaml and scheme#* section
+was from programs in [yns/](yns/).
 
 It was recommended to begin with
 [yns/yns.yaml2html.ss](yns/yns.yaml2html.ss)
 because it is much simpler than others.
-
-And actually chart in *#yaml and scheme#* section
-was from programs in [yns/](yns/) .
 
 ## License
 
