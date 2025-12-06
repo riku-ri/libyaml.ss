@@ -11,6 +11,23 @@
 
 - des:
     yaml: |-
+      documents
+    ss: |-
+      A procedure that:
+      - Can take a parameter
+        - When the argument is -1, return a list that:
+          - Each element is other yaml structure listed below
+  e.g.:
+  - yaml: |-
+      --- 2
+      ---
+      ...
+    ss: |-
+      (lambda (...)
+        (list 2 (list)))
+
+- des:
+    yaml: |-
       null
     ss: |-
       empty list
@@ -23,19 +40,6 @@
       ~
     ss: |-
       '()
-
-- des:
-    yaml: |-
-      document
-    ss: |-
-      list
-  e.g.:
-  - yaml: |-
-      --- 2
-      ---
-      ...
-    ss: |-
-      (list 2 (list))
 
 - des:
     yaml: |-

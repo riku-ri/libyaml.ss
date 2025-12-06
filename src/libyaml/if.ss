@@ -3,23 +3,36 @@
 (import scheme (chicken base))
 (import (chicken condition))
 
-(define (yaml? ?) (and
-	(procedure? ?)
-	(handle-exceptions e #f (list? (? -1)))
-	(handle-exceptions e #f (if (?) #t))
-	; only catch exception here
-	; just keep always true if no exception
-	(equal? (car (? -1)) (?))
-	(ydoc? (? -1))
+(define (yaml? ?) (let*
+	(
+		(and* (lambda (L) (foldl (lambda (l r) (and l r)) #t L)))
+		(list->index (lambda (L) (map (lambda (?) (- (length L) ?))
+			(foldr (lambda (l r) (cons (length (cons l r)) r))
+				'() L))))
+	)
+	(and
+		(procedure? ?)
+		(handle-exceptions e #f (list? (? -1)))
+		(handle-exceptions e #f (if (?) #t))
+		; only catch exception here
+		; as a predication, exception should return #f but not abort
+		(equal? (car (? -1)) (?))
+		(and* (map (lambda (di) (equal? (? di) (list-ref (? -1) di)))
+			(list->index (? -1))
+		))
+		(ydoc? (? -1))
+	)
 ))
 
 (define (ydoc? ?) (and
-	(list? ?)
+	(procedure? ?)
+	(handle-exceptions e #f (? -1))
+	(list? (? -1))
 	(foldl (lambda (l r) (and l r)) #t
 		(map
 			((lambda (@) (@ @)) (lambda (@) (lambda (?)
 				(or (ymap?? ?) (ylist?? ?) (yscalar? ?)))))
-			?
+			(? -1)
 		)
 	)
 ))

@@ -199,7 +199,7 @@
 			0)
 	)
 	(cond
-		((ydoc? yaml) (map <-yaml-document yaml))
+		((ydoc? yaml) (map <-yaml-document (yaml -1)))
 		(else (<-yaml-document yaml))
 	)
 	; XXX if map is parallel, emitter may be undefined

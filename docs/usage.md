@@ -260,21 +260,21 @@ order is not sensitive:
 
 ### Check the structure
 
+All check are supposed to be based on definition in *#yaml and scheme#* section.
+
 ---
 
 ```lisp
 (yaml? ?)
-```
-
-Recursively check if `?` match format of `yaml<-` output
-
----
-
-```lisp
 (ydoc? ?)
 ```
 
-Recursively check if `?` is a scheme structure that match a yaml-document
+Check if `?` is a scheme structure that match a yaml-documents
+
+`ydoc?` just check if the procedure valid when take `-1` as parameter.
+
+`yaml?` will check if the to be outputed parameter totally match
+the format of `yaml<-` return value
 
 ---
 
