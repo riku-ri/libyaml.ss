@@ -19,8 +19,7 @@
 	"\\font\\bf={[cmunsx]} scaled\\magstep2"
 	"\\font\\tt={[MonaspaceArgon-Regular]} scaled\\magstephalf"
 	"\\rm"
-	"\\openup.33em"
-	"\\lineskiplimit=0pt"
+	"\\openup.5em"
 )
 (display "\\setbox0=")
 
@@ -44,12 +43,12 @@
 	"\\csname[vlines max wd]\\expandafter\\endcsname"
 	"\\else"
 	"\\maxset=\\toset\\relax\\toset=0\\relax"
-	"\\vbox{\\hsize=\\maxwd\\csname[vlines lines]\\endcsname}"
+	"\\vbox{" "\\hsize=\\maxwd\\csname[vlines lines]\\endcsname}"
 	"\\fi"
 	"}"
 	"\\expandafter\\def\\csname[vlines max wd]\\endcsname#1{"
 	"\\advance\\toset by 1\\relax"
-	"\\toks\\toset={\\null\\strut#1}"
+	"\\toks\\toset={\\strut#1}" ; The old commit added a \null here, it made a unexpected line skip here
 	"\\setbox0=\\hbox{#1}\\ifdim\\maxwd<\\wd0\\relax\\maxwd=\\wd0\\relax\\fi"
 	"\\csname[vlines back]\\endcsname"
 	"}"
@@ -160,13 +159,13 @@
 		((null? /c) "")
 		((string? (car /c))
 			(string+
-				"\\hrule height 0.1pt" "\\hbox{" "\\vrule width 0.1pt" "\\vbox{" "\\vskip.33em" "\\hbox{" "\\hskip1.33ex"
+				"\\hrule height 0.1pt" "\\hbox{" "\\vrule width 0.1pt" "\\vbox{" "\\vskip1em" "\\hbox{" "\\hskip1.33ex"
 				"\\hbox to\\dimen\\rowdim{" "\\strut" "\\vbox to\\dimen" index "{" "\\vfil"
 					"\\vbox{"
 						"\\hsize=\\dimen\\rowdim" (car /c)
 					"}"
 				"\\vfil" "}" "\\strut" "}"
-				"}" "\\vskip.33em" "}" "\\hskip1.33ex" "\\vrule width 0.1pt" "}" "\\hrule height 0.1pt"
+				"}" "\\vskip1em" "}" "\\hskip1.33ex" "\\vrule width 0.1pt" "}" "\\hrule height 0.1pt"
 				(/c->vbox (cdr /c) (+ index 1))
 			)
 		)
