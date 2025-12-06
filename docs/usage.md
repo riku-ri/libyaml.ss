@@ -78,9 +78,9 @@ See *#Read yaml#* section below.
 
 `yaml<-` will return a **procedure** that generate yaml-documents:
 - the **procedure** take 1 or no parameter
-  - if 1 parameter, it must be a positive integer or `-1`
-    - for -1, return a scheme-list of all yaml-document
-    - for positive integer ***n***, return the ***n***th document.
+  - if 1 parameter, it must be a non-negative integer or `-1`
+    - for `-1`, return a scheme-list of all yaml-document
+    - for positive integer ***n***, return the ***n-1***th document.
       Index from `0` but not `1`
   - if no parameter, return the 1st document.
     Equal to parameter is `0`
@@ -159,9 +159,6 @@ order is not sensitive:
 
 ### Dump yaml
 
-Parameters to `yaml<-` can be
-a sequence that contain 1 or more element listed below,
-order is not sensitive:
 
 ```
 (<-yaml . |Parameters|)
@@ -180,6 +177,10 @@ For example:
 - `(<-yaml ((yaml<- "1")))` will output `--- 1` to `(current-output-port)`
 
 #### Parameters
+
+Parameters to `<-yaml` can be
+a sequence that contain 1 or more element listed below,
+order is not sensitive:
 
 - Scheme structure to be output
   - *format*:
