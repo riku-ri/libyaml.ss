@@ -1,6 +1,3 @@
-[submodule "git/riku-ri/varg.ss"]
-	path = git/riku-ri/varg.ss
-	url = https://github.com/riku-ri/varg.ss
 [submodule "git/yaml/libyaml"]
 	path = git/yaml/libyaml
 	url = https://github.com/yaml/libyaml
