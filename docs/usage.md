@@ -46,25 +46,21 @@ More specifically, they would be:
 
 ### Values in `yaml.h`
 
-[libyaml.ss<sub>git</sub>](.) will
+[libyaml.ss](.) will
 export enum members and functions in
-[*yaml.h*](https://github.com/yaml/libyaml/blob/master/include/yaml.h) from
-[yaml/libyaml<sub>git</sub>](https://github.com/yaml/libyaml).
+[`../git/yaml/libyaml/include/yaml.h`](../git/yaml/libyaml/include/yaml.h) from
+submodule [`../git/yaml`](../git/yaml/libyaml).
 
 Functions and enum members can be used in scheme code as
 scheme variable or procedure.
 
 > Note that you may install libyaml development package in your system,
-> but [libyaml.ss<sub>git</sub>](.) will use the *yaml.h* in
+> but [libyaml.ss](.) will use the *yaml.h* in
 > submodule *src/libyaml* but not the yaml.h in your system
 
 ### yaml and scheme
 
 The chart below define mapping between yaml structure and scheme structure.
-
-Note that the top level API did not return the structures here,
-but a procedure that generate them.
-See *#Read yaml#* section below.
 
 ![](yns/yns.svg)
 
@@ -76,7 +72,7 @@ See *#Read yaml#* section below.
 
 #### Return value
 
-`yaml<-` will return a **procedure** that generate yaml-documents:
+`yaml<-` will return a procedure that generate yaml-documents:
 - the **procedure** take 1 or no parameter
   - if 1 parameter, it must be a non-negative integer or `-1`
     - for `-1`, return a scheme-list of all yaml-document
@@ -199,17 +195,14 @@ order is not sensitive:
   - *format*:
     - set or not
   - *description*:
-    - As mentioned `yaml<-` return value above,
-      it is a procedure to generate yaml structure.
-      But generally it makes no sense to wrap a structure to a procedure
-      before dumping it.
-      So `<-yaml` does not require a procedure,
-      but the real structure by default.
+    - The *#yaml and scheme#* section
+      only defined the behavior when the parameter is `-1` for yaml-document,
+      while `yaml<-` return a more specific procedure.
 
-      If a strict input formatted like return value of `yaml<-` is necessary,
-      set `#:strict-input` and
-      `<-yaml` will check if the to be outputed parameter totally match
-      the format of `yaml<-` return value
+      If `#:strict-input` was set,
+      `<-yaml` will check if the structure to be outputed
+      match the return value of `yaml<-`,
+      but not only test definition in *#yaml and scheme#* section.
   - *if-necessary*:
     - No
   - *if-not-set*:

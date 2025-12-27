@@ -13,10 +13,9 @@
     yaml: |-
       documents
     ss: |-
-      A procedure that:
-      - Can take a parameter
-        - When the argument is -1, return a list that:
-          - Each element is other yaml structure listed below
+      A procedure that can take a parameter.
+      When the parameter is -1, return a list,
+      which contains other yaml structure listed below
   e.g.:
   - yaml: |-
       --- 2
