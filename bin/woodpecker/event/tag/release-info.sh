@@ -4,6 +4,17 @@ set -eo pipefail
 
 ${0%/*}/ENV.sh
 
+${0%/*}/git-archive--with-submodule.sh
+
+tar czp -C .local/. -f $CI_REPO_NAME.tar.gz $CI_REPO_NAME
+
+curl -sSL \
+	-u :$TOKEN -X 'POST' \
+	-H 'accept: application/json' \
+	-H 'Content-Type: multipart/form-data' \
+	-F "attachment=@$CI_REPO_NAME.tar.gz" \
+	"$API_URL/repos/$CI_REPO/releases/$id/assets?name=$CI_REPO_NAME.tar.gz"
+
 echo '(repo git "'"$CI_REPO_CLONE_URL"'")' | tee $CI_REPO_NAME.release-info
 echo '(uri targz "'"$CI_REPO_URL/releases/download/{egg-release}/$CI_REPO_NAME.tar.gz"'")' | tee -a $CI_REPO_NAME.release-info
 
