@@ -6,7 +6,7 @@ ${0%/*}/ENV.sh
 
 ${0%/*}/git-archive--with-submodule.sh
 
-tar czp -C .local/. -f $CI_REPO_NAME.tar.gz $CI_REPO_NAME
+tar cvzp -C .local/. -f $CI_REPO_NAME.tar.gz $CI_REPO_NAME
 
 echo '(repo git "'"$CI_REPO_CLONE_URL"'")' | tee $CI_REPO_NAME.release-info
 echo '(uri targz "'"$CI_REPO_URL/releases/download/{egg-release}/$CI_REPO_NAME.tar.gz"'")' | tee -a $CI_REPO_NAME.release-info
