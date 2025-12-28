@@ -5,7 +5,7 @@ set -eo pipefail
 ${0%/*}/ENV.sh
 
 echo '(repo git "'"$CI_REPO_CLONE_URL"'")' | tee $CI_REPO_NAME.release-info
-echo '(uri targz "'"$CI_REPO_URL/archive/{egg-release}.tar.gz"'")' | tee -a $CI_REPO_NAME.release-info
+echo '(uri targz "'"$CI_REPO_URL/releases/download/{egg-release}/$CI_REPO_NAME.tar.gz"'")' | tee -a $CI_REPO_NAME.release-info
 
 curl -sSL \
 	-X 'GET' \
