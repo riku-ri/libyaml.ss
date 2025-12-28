@@ -1,0 +1,4 @@
+.github/** export-ignore
+.github/* export-ignore
+.woodpecker/** export-ignore
+.woodpecker/* export-ignore
