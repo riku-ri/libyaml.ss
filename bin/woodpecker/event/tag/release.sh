@@ -13,5 +13,5 @@ curl -sSL \
 	-X 'POST' \
 	-H 'accept: application/json' \
 	-H 'Content-Type: application/json' \
-	-d '{''"body": '"\"$body\" , "'"name": ''"'"$CI_COMMIT_TAG"'"'' ,  "tag_name": ''"'$CI_COMMIT_TAG'"}' \
+	-d '{''"body": '"\"$body\" , "'"name": ''"'"$CI_COMMIT_TAG"'"'' ,"prerelease": true , "draft": false ,  "tag_name": ''"'$CI_COMMIT_TAG'"}' \
 	"$API_URL/repos/$CI_REPO/releases"
