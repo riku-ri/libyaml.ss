@@ -11,7 +11,7 @@ installation need to run by chichen scheme tools.
 
 Another module `varg` is required,
 install it before the later steps:
-- https://github.com/riku-ri/varg.ss
+- https://codeberg.org/rikuri/varg.ss
 
 To install locally, clone this git repository and update submodules :
 ```
