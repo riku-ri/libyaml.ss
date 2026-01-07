@@ -10,12 +10,12 @@ section structure will follow
 
 ## Repository
 
-[https://github.com/riku-ri/libyaml.ss/](https://github.com/riku-ri/libyaml.ss/)
+[https://codeberg.org/rikuri/libyaml.ss/](https://codeberg.org/rikuri/libyaml.ss/)
 
 ## Requirements
 
 - varg
-  - https://github.com/riku-ri/varg.ss
+  - https://codeberg.org/rikuri/varg.ss
 
 ## API
 
