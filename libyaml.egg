@@ -40,6 +40,7 @@
 			;varg.varg
 		)
 		(source src/libyaml/ss2yaml.ss)
+		(csc-options "-C" "-I./git/yaml/libyaml/include/.")
 	)
 	(extension libyaml.yaml2ss
 		(component-dependencies
@@ -48,6 +49,7 @@
 			;varg.varg
 		)
 		(source src/libyaml/yaml2ss.ss)
+		(csc-options "-C" "-I./git/yaml/libyaml/include/.")
 	)
 	(extension libyaml.if (source src/libyaml/if.ss))
 	(extension libyaml.yaml.h
